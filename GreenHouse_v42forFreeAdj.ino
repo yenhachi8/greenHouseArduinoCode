@@ -1,4 +1,5 @@
 /*
+change vscode
   ---------感測器腳位配置----------
   A0:溫濕度感測器
   A1:光感測器
@@ -23,7 +24,7 @@
 //網路設定
 
 char ssid[] = ""; //*改自己wifi
-char pass[] = "";       //*改自己wifi密碼
+char pass[] = ""; //*改自己wifi密碼
 
 int status = WL_IDLE_STATUS;
 IPAddress server(140, 127, 196, 114); //*修改成欲作為伺服器的ip
@@ -33,7 +34,7 @@ PubSubClient client(wifiClient);
 void printWifiStatus();
 char receivedChar;
 
-const char *topicPub = "7697toSQL";  //*修改成自己設定的主題
+const char *topicPub = "7697toSQL";   //*修改成自己設定的主題
 const char *topicSub = "phoneTo7697"; //*修改成自己訂閱的主題
 
 String strJson = "";
@@ -41,7 +42,6 @@ char charJson[100];
 
 const char *topicPubToPhone = "7697toPhone";
 String strPubToPhone = "";
-
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "tw.pool.ntp.org", 28800, 60000);
@@ -55,7 +55,6 @@ float h; // 暫存
 const int relayFan = 6;
 String temp;
 String humi;
-
 
 //光感測器設定
 #define LIGHT_SENSOR A1
@@ -84,25 +83,24 @@ char Ultra[15];
 unsigned long prevMillis = 0; //記錄時間
 unsigned long prevMillis_2 = 0;
 const long interval_2 = 5000;
-int timeHour;              //記錄標準時間，用來做燈亮控制
+int timeHour;               //記錄標準時間，用來做燈亮控制
 const long interval = 1000; //用來計算時間，1000毫秒=1秒
-
 
 //預設系統是 ”自動“
 char charPubToPhone[1400];
 char ModeChar[80]; //顯示狀態到手機
 char helpChar[500];
 char manualHelpChar[200];
-char instructChar[20];           //儲存指令，用來做比較控制使用
+char instructChar[20]; //儲存指令，用來做比較控制使用
 char thresholdNoteChar[250];
 char showThresholdChar[150];
 char thresholdTransChar[140];
 
 bool manualHelpFlag = 1;
-bool stateAutoManual = 0;    //=0自動 =1手動
-bool modeFlag = 1;            //=0重新設定 =1設定完成
-bool helpFlag = 1;          //
-bool thresholdSetFlag = 1;       //設定自動模式門檻 預設為已設定好
+bool stateAutoManual = 0;  //=0自動 =1手動
+bool modeFlag = 1;         //=0重新設定 =1設定完成
+bool helpFlag = 1;         //
+bool thresholdSetFlag = 1; //設定自動模式門檻 預設為已設定好
 bool thresholdInputFlag = 1;
 bool showThresholdFlag = 1;
 
@@ -113,7 +111,6 @@ bool lightValueFlag = 1;
 bool humiValueFlag = 1;
 bool moisValueFlag = 1;
 bool ultraValueFlag = 1;
-
 
 //傳至ModeChar 顯示狀態
 String ledState = "";
@@ -131,8 +128,6 @@ int buzzerStart = 15;
 int timeStart = 8;
 int timeEnd = 17;
 
-
-
 void setup()
 {
   Serial.begin(9600);
@@ -145,10 +140,10 @@ void setup()
   pinMode(relayFan, OUTPUT);
   pinMode(relayPump, OUTPUT);
   pinMode(relayBuzzer, OUTPUT);
-//  fanState = "x";
-//  ledState = "x";
-//  pumpState = "x";
-//  buzzerState = "x";
+  //  fanState = "x";
+  //  ledState = "x";
+  //  pumpState = "x";
+  //  buzzerState = "x";
   //  fanState = "Fan OFF";
   //  ledState = "Led OFF";
   //  pumpState = "Pump OFF";
@@ -204,11 +199,11 @@ void callback(char *topic, byte *payload, unsigned int length)
     thresholdSetFlag = !thresholdSetFlag;
     thresholdInputFlag = !thresholdInputFlag;
   }
-  if(strcmp(instructChar,"manualhelp")==0)
+  if (strcmp(instructChar, "manualhelp") == 0)
   {
     manualHelpFlag = !manualHelpFlag;
   }
-  if(strcmp(instructChar,"showthreshold")==0)
+  if (strcmp(instructChar, "showthreshold") == 0)
   {
     showThresholdFlag = !showThresholdFlag;
   }
@@ -229,7 +224,6 @@ void loop()
       reconnect();
     }
     client.loop();
-
   }
 
   if ((millis() - prevMillis) > interval)
@@ -265,16 +259,13 @@ void loop()
       mValue = analogRead(MOISTURE);
       Msensor = (float)(100 - ((mValue / 4095) * 100));
       mois = String(Msensor);
-      
+
       //變數t取到小數點第二位，再轉換成c語言格式
       //c_str()函式返回一個指向正規C字串的指標, 內容與本string串相同
-
-
     }
-    if (modeFlag) {
-
+    if (modeFlag)
+    {
     }
-
 
     if (!modeFlag)
     {
@@ -311,18 +302,16 @@ void loop()
       }
     }
 
-
-
-
-    if (stateAutoManual == 0 && modeFlag ) //自動模式
+    if (stateAutoManual == 0 && modeFlag) //自動模式
     {
       fanState = "風扇： 無值";
       ledState = "led：  無值";
       pumpState = "抽水幫浦： 無值";
       //buzzerState = "無值";
       //超音波
-      if(timeEnd-timeStart<0){
-        timeEnd+=24;
+      if (timeEnd - timeStart < 0)
+      {
+        timeEnd += 24;
       }
       {
         if (RangeInCentimeters < buzzerStart)
@@ -337,20 +326,19 @@ void loop()
         }
       }
       if (timeHour >= timeStart && timeHour < timeEnd)
-        //白天的時候才啟動 (預設8~17點)
-        //到了晚上就不偵測
-        //超音波再回圈之外，（24小時偵測）
+      //白天的時候才啟動 (預設8~17點)
+      //到了晚上就不偵測
+      //超音波再回圈之外，（24小時偵測）
       {
         Serial.println("Mode:Auto");
 
         //濕度感測
-        if (h > fanStartByHumidity  )
+        if (h > fanStartByHumidity)
         {
           digitalWrite(relayFan, HIGH);
           fanState = "風扇： ON";
-
         }
-        if (h <= fanStartByHumidity )
+        if (h <= fanStartByHumidity)
         {
           digitalWrite(relayFan, LOW);
           fanState = "風扇： OFF";
@@ -385,10 +373,7 @@ void loop()
           }
         }
       }
-      
     }
-
-
 
     if (stateAutoManual == 1 && modeFlag == 1) //手動模式
     {
@@ -461,12 +446,13 @@ void loop()
 \n\"manualhelp\": 說明手動模式的指令。\
 \n\"showthreshold\": 顯示起動條件之值。\
 \n，再一次輸入 \"help\"以退出\n。");
-
     }
-    if (helpFlag ) {
+    if (helpFlag)
+    {
       strcpy(helpChar, "");
     }
-    if(!manualHelpFlag){
+    if (!manualHelpFlag)
+    {
       strcpy(manualHelpChar, "\n在手動模式下共有以下8個指令\
 \n控制LED燈開關\
 \nled_on\
@@ -482,10 +468,12 @@ void loop()
 \npump_off\
 \n再輸入一次\"manualhelp\"即可退出\n");
     }
-    if(manualHelpFlag){
+    if (manualHelpFlag)
+    {
       strcpy(manualHelpChar, "");
-    }     
-    if(!showThresholdFlag){
+    }
+    if (!showThresholdFlag)
+    {
       sprintf(thresholdTransChar, "\
 \nLed啟動值 : %s,\
 \n風扇      : %s,\
@@ -493,109 +481,125 @@ void loop()
 \n蜂鳴器    :%s\
 \n啟動時間   :%s\
 \n結束時間   :%s\
-\n",String(ledStart).c_str(),String(fanStartByHumidity).c_str(),String(pumpStart).c_str() ,String(buzzerStart).c_str(),String(timeStart).c_str(),String(timeEnd).c_str());
-      
+\n",
+              String(ledStart).c_str(), String(fanStartByHumidity).c_str(), String(pumpStart).c_str(), String(buzzerStart).c_str(), String(timeStart).c_str(), String(timeEnd).c_str());
+
       strcpy(showThresholdChar, thresholdTransChar);
     }
-    if(showThresholdFlag){
+    if (showThresholdFlag)
+    {
       strcpy(showThresholdChar, "");
     }
 
-    if (!thresholdSetFlag )
+    if (!thresholdSetFlag)
     {
 
-      if (!thresholdInputFlag) {
+      if (!thresholdInputFlag)
+      {
         Serial.println("----Threshold setting start----");
         strcpy(thresholdNoteChar, "\n\n請輸入欲改變之啟動值: 濕度：\"humi\"(風扇), 亮度：\"light\"（LED）, 土壤濕度：\"mois\"（幫浦）, 超音波：\"ultra\"（蜂鳴器）, 開始時間：\"timestart\", 結束時間：\"timeend\"\n再一次輸入 \"tset\" 即可退出\n");
         Serial.println("請輸入要改變的項目：");
         //
       }
 
-      if (strcmp(instructChar, "humi") == 0) {
+      if (strcmp(instructChar, "humi") == 0)
+      {
         Serial.println("\nPlease input a Humidity value to start Fan!");
         strcpy(thresholdNoteChar, "\n\n請輸入一整數值：(濕度)\n");
         humiValueFlag = 0;
         thresholdInputFlag = 1;
-
       }
-      if (strcmp(instructChar, "light") == 0) {
+      if (strcmp(instructChar, "light") == 0)
+      {
         Serial.println("\nPlease input a light threshold value to start LED!");
         strcpy(thresholdNoteChar, "\n\n請輸入一整數值：（亮度）\n");
         lightValueFlag = 0;
         thresholdInputFlag = 1;
       }
-      if (strcmp(instructChar, "mois") == 0) {
+      if (strcmp(instructChar, "mois") == 0)
+      {
         Serial.println("\nPlease input a Soil Moisture value to start 抽水幫浦： !");
         strcpy(thresholdNoteChar, "\n請輸入一整數值：（土壤濕度）\n");
         moisValueFlag = 0;
         thresholdInputFlag = 1;
-
       }
-      if (strcmp(instructChar, "ultra") == 0) {
+      if (strcmp(instructChar, "ultra") == 0)
+      {
         Serial.println("\nPlease input a UltraSonic distance to start 蜂鳴器：!");
         strcpy(thresholdNoteChar, "\n\n請輸入一整數值：（超音波感測器之距離）\n");
-        ultraValueFlag = 0 ;
+        ultraValueFlag = 0;
         thresholdInputFlag = 1;
-
       }
-      if (strcmp(instructChar, "timestart") == 0) {
+      if (strcmp(instructChar, "timestart") == 0)
+      {
         Serial.println("\nPlease input a timestart value to set when to start auto !");
         strcpy(thresholdNoteChar, "\n\n請輸入一整數值：（開始時間）\n");
         timeStartValueFlag = 0;
         thresholdInputFlag = 1;
-
       }
-      if (strcmp(instructChar, "timeend") == 0) {
+      if (strcmp(instructChar, "timeend") == 0)
+      {
         Serial.println("\nPlease input a timeend value to set when to end auto !");
         strcpy(thresholdNoteChar, "\n\n請輸入一整數值：（結束時間）\n");
         timeEndValueFlag = 0;
         thresholdInputFlag = 1;
-
       }
-      if (!lightValueFlag ) {
+      if (!lightValueFlag)
+      {
         ledStart = atoi(instructChar);
 
-        if (ledStart) {
+        if (ledStart)
+        {
           lightValueFlag = 1;
           thresholdInputFlag = 0;
         }
       }
-      if (!humiValueFlag ) {
+      if (!humiValueFlag)
+      {
         fanStartByHumidity = atoi(instructChar);
 
-        if (fanStartByHumidity) {
+        if (fanStartByHumidity)
+        {
           humiValueFlag = 1;
           thresholdInputFlag = 0;
         }
       }
-      if (!moisValueFlag ) {
+      if (!moisValueFlag)
+      {
         pumpStart = atoi(instructChar);
 
-        if (pumpStart) {
+        if (pumpStart)
+        {
           moisValueFlag = 1;
           thresholdInputFlag = 0;
         }
       }
-      if (!ultraValueFlag ) {
+      if (!ultraValueFlag)
+      {
         buzzerStart = atoi(instructChar);
 
-        if (buzzerStart) {
+        if (buzzerStart)
+        {
           lightValueFlag = 1;
           thresholdInputFlag = 0;
         }
       }
-      if (!timeStartValueFlag ) {
+      if (!timeStartValueFlag)
+      {
         timeStart = atoi(instructChar);
 
-        if (timeStart) {
+        if (timeStart)
+        {
           timeStartValueFlag = 1;
           thresholdInputFlag = 0;
         }
       }
-      if (!timeEndValueFlag ) {
+      if (!timeEndValueFlag)
+      {
         timeEnd = atoi(instructChar);
 
-        if (timeEnd) {
+        if (timeEnd)
+        {
           timeEndValueFlag = 1;
           thresholdInputFlag = 0;
         }
@@ -603,21 +607,17 @@ void loop()
 
       Serial.println("----Threshold setting end----");
     }
-    if (thresholdSetFlag ) {
+    if (thresholdSetFlag)
+    {
       strcpy(thresholdNoteChar, "");
     }
-    
-    
+
     strJson = "{\"temp\":" + String(t) + ",\"humi\":" + String(h) + ",\"led\":" + String(light) +
               ",\"moisture\":" + String(mois) + ",\"ultrasonic\":" + String(ultra) + "}";
 
     strJson.toCharArray(charJson, 100); //將strJson轉成字元陣列並放入charJson裡，大小為50
 
-    strPubToPhone = "Mode state:" + String(ModeChar) + String(helpChar) + String(thresholdNoteChar) \
-                    + String(manualHelpChar)+String(showThresholdChar)+"\n溫度(ºC): " + String(t) + ",\n濕度(%): " + String(h) \
-                    +",\n亮度(%): " + String(light) + "%,\n超音波距離(cm): " + String(ultra) + ",\n土壤濕度(%): " + String(mois)\
-                    + "%,\n" + String(ledState) + "\n" + String(fanState) + "\n" + String(pumpState) + "\n" + String(buzzerState) ;
-
+    strPubToPhone = "Mode state:" + String(ModeChar) + String(helpChar) + String(thresholdNoteChar) + String(manualHelpChar) + String(showThresholdChar) + "\n溫度(ºC): " + String(t) + ",\n濕度(%): " + String(h) + ",\n亮度(%): " + String(light) + "%,\n超音波距離(cm): " + String(ultra) + ",\n土壤濕度(%): " + String(mois) + "%,\n" + String(ledState) + "\n" + String(fanState) + "\n" + String(pumpState) + "\n" + String(buzzerState);
 
     strPubToPhone.toCharArray(charPubToPhone, sizeof(charPubToPhone));
 
@@ -640,7 +640,6 @@ void loop()
     client.publish(topicPub, charJson);
     prevMillis_2 = millis();
   }
-
 }
 
 void printWifiStatus()
@@ -669,7 +668,6 @@ void reconnect()
     {
       Serial.println("connected");
       client.subscribe(topicSub, 0);
-  
     }
     else
     {
